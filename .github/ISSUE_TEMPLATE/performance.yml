@@ -1,0 +1,196 @@
+name: ⚡ Performance Issue
+description: Report a performance problem or optimization opportunity
+title: "[Performance]: "
+labels: ["performance", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a performance issue! This helps us optimize @webx/sig for everyone.
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have searched existing issues
+          required: true
+        - label: I have profiled my code to identify the bottleneck
+          required: false
+        - label: I have tested with the latest version
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Performance Issue Description
+      description: Describe the performance problem
+      placeholder: |
+        When generating IDs with...
+        The performance is...
+        Expected performance is...
+    validations:
+      required: true
+
+  - type: textarea
+    id: benchmark
+    attributes:
+      label: Benchmark Results
+      description: Provide benchmark data showing the issue
+      placeholder: |
+        Current performance:
+        - 1000 IDs generated in 5000ms
+        - Average: 5ms per ID
+        - Peak memory: 500MB
+        
+        Expected performance:
+        - Should be ~1ms per ID
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: Share the code that exhibits the performance issue
+      placeholder: |
+        ```typescript
+        import { generateId } from '@webx/sig';
+        
+        // Slow code
+        for (let i = 0; i < 10000; i++) {
+          await generateId({
+            length: 32,
+            mode: 'memory-hard',
+            // ...
+          });
+        }
+        ```
+      render: typescript
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Generation Mode
+      options:
+        - random
+        - hash
+        - hmac
+        - hybrid
+        - hmac-hash
+        - memory-hard
+        - All modes
+    validations:
+      required: true
+
+  - type: dropdown
+    id: algorithm
+    attributes:
+      label: Algorithm
+      options:
+        - sha256
+        - sha512
+        - sha3-256
+        - sha3-512
+        - blake2b512
+        - shake256
+        - All algorithms
+    validations:
+      required: true
+
+  - type: input
+    id: throughput
+    attributes:
+      label: Current Throughput
+      description: How many IDs per second are you able to generate?
+      placeholder: "~1000 IDs/sec"
+    validations:
+      required: true
+
+  - type: input
+    id: expected-throughput
+    attributes:
+      label: Expected Throughput
+      description: What throughput did you expect?
+      placeholder: "~10000 IDs/sec"
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Provide details about your environment
+      placeholder: |
+        - Node.js: v20.10.0
+        - OS: Ubuntu 22.04
+        - CPU: Intel i7-12700K
+        - RAM: 32GB
+        - Package version: 2.0.0
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: security-features
+    attributes:
+      label: Security Features Enabled
+      description: Which features are you using?
+      options:
+        - label: Rate limiting
+        - label: Entropy pool
+        - label: Memory-hard derivation
+        - label: Collision detection
+        - label: Secure deletion
+        - label: Audit logging
+        - label: Multiple checksums
+        - label: Post-quantum algorithms
+
+  - type: textarea
+    id: profiling
+    attributes:
+      label: Profiling Data
+      description: If you've profiled the code, share the results
+      placeholder: |
+        Flamegraph showing:
+        - 80% time in memoryHardDerive()
+        - 15% in hashData()
+        - 5% in other functions
+      render: shell
+
+  - type: dropdown
+    id: scale
+    attributes:
+      label: Scale
+      description: What scale are you operating at?
+      options:
+        - Small (<100 IDs/sec)
+        - Medium (100-1000 IDs/sec)
+        - Large (1000-10000 IDs/sec)
+        - Very large (>10000 IDs/sec)
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Business Impact
+      description: How does this performance issue impact your use case?
+      placeholder: |
+        - Blocks production deployment
+        - Causes API timeouts
+        - Increases cloud costs by...
+        - Impacts user experience because...
+
+  - type: textarea
+    id: suggestions
+    attributes:
+      label: Optimization Suggestions
+      description: Do you have ideas for optimization?
+      placeholder: |
+        Could we:
+        - Cache the entropy pool?
+        - Batch the operations?
+        - Use worker threads?

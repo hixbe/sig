@@ -1,0 +1,218 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the form below.
+        
+        **⚠️ Security Issues:** If this is a security vulnerability, please DO NOT create a public issue. 
+        Instead, report it privately via [Security Advisories](../security/advisories/new).
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      description: Please confirm the following before submitting
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have read the documentation (README.md, ADVANCED.md)
+          required: true
+        - label: This is not a security vulnerability (use private reporting instead)
+          required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Tell us what happened
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Import the package with '...'
+        2. Call generateId with options '...'
+        3. See error
+      value: |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: I expected...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Instead...
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: Please provide a minimal code sample that reproduces the issue
+      placeholder: |
+        ```typescript
+        import { generateId } from '@webx/sig';
+        
+        const id = await generateId({
+          length: 32,
+          // ... your options
+        });
+        ```
+      render: typescript
+
+  - type: dropdown
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of @webx/sig are you using?
+      options:
+        - 2.0.0 (latest)
+        - 1.x.x
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Output of `node --version`
+      placeholder: v20.10.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: What OS are you using?
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Generation Mode
+      description: Which mode were you using when the bug occurred?
+      options:
+        - random
+        - hash
+        - hmac
+        - hybrid
+        - hmac-hash
+        - memory-hard
+        - Not applicable
+    validations:
+      required: true
+
+  - type: dropdown
+    id: algorithm
+    attributes:
+      label: Algorithm
+      description: Which algorithm were you using?
+      options:
+        - sha256
+        - sha512
+        - sha3-256
+        - sha3-512
+        - blake2b512
+        - shake256
+        - kyber768
+        - dilithium3
+        - Not applicable
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error Message / Stack Trace
+      description: If applicable, paste the full error message and stack trace
+      placeholder: |
+        Error: ...
+        at ...
+      render: shell
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Any relevant logs or console output
+      render: shell
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem (dependencies, environment variables, etc.)
+      placeholder: |
+        - Using TypeScript 5.3.0
+        - Running in Docker container
+        - Behind corporate proxy
+
+  - type: checkboxes
+    id: security-features
+    attributes:
+      label: Security Features Used
+      description: Which advanced security features are you using? (check all that apply)
+      options:
+        - label: Rate limiting
+        - label: Entropy pool
+        - label: Collision detection
+        - label: TTL/Expiry
+        - label: HMAC signing
+        - label: Checksums
+        - label: Audit logging
+        - label: Device binding
+        - label: Geolocation
+        - label: Revocation lists
+        - label: Post-quantum algorithms
+        - label: None / Basic usage
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Workaround
+      description: If you found a workaround, please share it
+      placeholder: I was able to work around this by...
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (blocks production use)
+        - High (major functionality broken)
+        - Medium (workaround available)
+        - Low (minor issue)
+    validations:
+      required: true

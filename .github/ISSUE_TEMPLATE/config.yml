@@ -1,0 +1,25 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation
+    url: https://github.com/webx/sig/blob/main/README.md
+    about: Read the full documentation
+  
+  - name: 🚀 Quick Start Guide
+    url: https://github.com/webx/sig/blob/main/QUICKSTART.md
+    about: Get started quickly with examples
+  
+  - name: 🔒 Security Documentation
+    url: https://github.com/webx/sig/blob/main/SECURITY.md
+    about: Security policy and responsible disclosure
+  
+  - name: 🛡️ Security Assessment
+    url: https://github.com/webx/sig/blob/main/SECURITY-ASSESSMENT.md
+    about: Comprehensive security analysis
+  
+  - name: 💬 GitHub Discussions
+    url: https://github.com/webx/sig/discussions
+    about: Ask questions and discuss with the community
+  
+  - name: 🔐 Report Security Vulnerability
+    url: https://github.com/webx/sig/security/advisories/new
+    about: Report security issues privately (DO NOT use public issues)

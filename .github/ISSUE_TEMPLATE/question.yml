@@ -1,0 +1,106 @@
+name: ❓ Question / Help
+description: Ask a question or get help with usage
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Need help with @webx/sig? We're here to help!
+        
+        **Before asking:**
+        - Check [README.md](../../README.md) - Main documentation
+        - Check [ADVANCED.md](../../ADVANCED.md) - Advanced features
+        - Check [QUICKSTART.md](../../QUICKSTART.md) - Quick start guide
+        - Check [existing issues](https://github.com/webx/sig/issues?q=label%3Aquestion) - Someone may have asked already
+
+  - type: checkboxes
+    id: prerequisites
+    attributes:
+      label: Prerequisites
+      options:
+        - label: I have checked the documentation
+          required: true
+        - label: I have searched existing issues
+          required: true
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: Question Type
+      options:
+        - Usage / How to
+        - Configuration
+        - Security / Best practices
+        - Performance / Optimization
+        - Integration with other tools
+        - Troubleshooting
+        - Algorithm / Cryptography
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: How do I...?
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-tried
+    attributes:
+      label: What Have You Tried?
+      description: What have you already attempted?
+      placeholder: |
+        I tried...
+        I looked at...
+        I expected...
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Current Code
+      description: Share your current code (if applicable)
+      placeholder: |
+        ```typescript
+        import { generateId } from '@webx/sig';
+        
+        // Your code here
+        ```
+      render: typescript
+
+  - type: dropdown
+    id: use-case
+    attributes:
+      label: Use Case
+      description: What are you trying to build?
+      options:
+        - Payment system
+        - API authentication
+        - Session management
+        - Database IDs
+        - Distributed system
+        - Learning / Education
+        - Research
+        - Other
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      placeholder: 2.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information
+      placeholder: |
+        - Environment: Node.js 20.10.0, TypeScript 5.3.0
+        - Framework: Express.js
+        - Purpose: Generating API keys for payment gateway
