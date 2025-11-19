@@ -79,11 +79,167 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     secureDelete: secureDeleteFlag = false,
   } = security;
 
-  // Warn if length is less than 8
+  // ============================================================================
+  // CONFIGURATION VALIDATION
+  // ============================================================================
+
+  // Validate length
   if (length < 8) {
     console.warn(
-      `Warning: Specified length (${length}) is less than the recommended minimum of 8 characters. ` +
-        `This may compromise security. The actual core ID will be at least 8 characters.`
+      `⚠️  Warning: Length (${length}) is less than recommended minimum of 8 characters. ` +
+        `This may compromise security. Actual core ID will be at least 8 characters.`
+    );
+  }
+
+  if (length > 256) {
+    console.warn(
+      `⚠️  Warning: Length (${length}) is unusually large. Consider using length ≤ 128 for performance.`
+    );
+  }
+
+  // Validate checksum configuration
+  if (checksum) {
+    if (checksumCount < 1) {
+      throw new Error('checksumCount must be at least 1 when checksum is enabled');
+    }
+
+    if (checksumLength < 1 || checksumLength > 64) {
+      throw new Error('checksumLength must be between 1 and 64 characters');
+    }
+
+    // Calculate required length with all metadata
+    let totalMetadata = checksumCount * checksumLength;
+    if (timestampEmbed) totalMetadata += 8;
+    if (embedExpiryFlag) totalMetadata += 8;  // Expiry is 8 chars in base36
+    if (embedGeo) totalMetadata += 8;
+    if (deviceBinding) totalMetadata += 12;
+    
+    const minCoreLength = 8;
+    const requiredLength = minCoreLength + totalMetadata;
+    
+    if (length < requiredLength) {
+      throw new Error(
+        `Configuration Error: Length (${length}) is too short for the configured features.\n` +
+        `Metadata breakdown:\n` +
+        `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
+        `  • Timestamp: ${timestampEmbed ? 8 : 0} chars\n` +
+        `  • Expiry: ${embedExpiryFlag ? 10 : 0} chars\n` +
+        `  • Geo: ${embedGeo ? 8 : 0} chars\n` +
+        `  • Device: ${deviceBinding ? 12 : 0} chars\n` +
+        `  • Total metadata: ${totalMetadata} chars\n` +
+        `  • Minimum core: ${minCoreLength} chars\n\n` +
+        `Required minimum length: ${requiredLength} chars\n` +
+        `Recommended length: ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} chars or higher\n\n` +
+        `Solution: Set length to ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} or use fewer security features.`
+      );
+    }
+
+    if (Array.isArray(checksumPosition)) {
+      // Validate custom positions with actual calculated length
+      const maxPosition = Math.max(...checksumPosition);
+      const actualCoreLength = Math.max(minCoreLength, length - totalMetadata);
+      const finalIdLength = actualCoreLength + (checksumCount * checksumLength);
+      
+      if (maxPosition >= finalIdLength) {
+        throw new Error(
+          `Configuration Error: Checksum position ${maxPosition} exceeds ID length.\n` +
+          `Calculated ID structure:\n` +
+          `  • Core length: ${actualCoreLength} chars\n` +
+          `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
+          `  • Final ID length: ${finalIdLength} chars\n` +
+          `  • Maximum valid position: ${finalIdLength - checksumLength}\n\n` +
+          `Solutions:\n` +
+          `  1. Use checksumPosition: 'end' (recommended)\n` +
+          `  2. Adjust positions to [${Math.floor(actualCoreLength / 3)}, ${Math.floor(actualCoreLength * 2 / 3)}]\n` +
+          `  3. Increase length to ${requiredLength + 10} or more`
+        );
+      }
+
+      if (checksumPosition.length < checksumCount) {
+        console.warn(
+          `⚠️  Warning: checksumPosition array has ${checksumPosition.length} positions ` +
+          `but checksumCount is ${checksumCount}. Only ${checksumPosition.length} checksums will be placed.`
+        );
+      }
+    }
+  }
+
+  // Validate mode requirements
+  if ((mode === 'hmac' || mode === 'hmac-hash' || mode === 'memory-hard') && !secret) {
+    throw new Error(`Secret is required for mode '${mode}'. Provide options.secret or set an environment variable.`);
+  }
+
+  // Validate security options
+  if (embedExpiryFlag && !ttl) {
+    throw new Error('TTL is required when security.embedExpiry is enabled. Specify security.ttl in milliseconds.');
+  }
+
+  if (embedExpiryFlag && ttl !== undefined && ttl < 1000) {
+    console.warn(
+      `⚠️  Warning: TTL (${ttl}ms) is very short (< 1 second). ` +
+      `This may cause IDs to expire immediately. Consider using at least 60000ms (1 minute).`
+    );
+  }
+
+  if (deviceBinding && !deviceId) {
+    throw new Error('deviceId is required when security.deviceBinding is enabled. Provide security.deviceId.');
+  }
+
+  if (embedGeo && !geoRegion) {
+    console.warn(
+      `⚠️  Warning: security.embedGeo is enabled but geoRegion is not specified. ` +
+      `The ID will be generated without geographic binding.`
+    );
+  }
+
+  // Validate separator configuration
+  if (separator) {
+    if (separator.length > 3) {
+      console.warn(
+        `⚠️  Warning: Separator '${separator}' is ${separator.length} characters long. ` +
+        `Long separators increase ID length. Consider using 1-2 character separators.`
+      );
+    }
+
+    if (separatorLength < 2 || separatorLength > 16) {
+      console.warn(
+        `⚠️  Warning: separatorLength (${separatorLength}) is outside typical range (2-16). ` +
+        `This may produce unusually formatted IDs.`
+      );
+    }
+  }
+
+  // Validate algorithm compatibility
+  if ((algorithm === 'kyber768' || algorithm === 'dilithium3') && mode !== 'random') {
+    console.warn(
+      `⚠️  Warning: Post-quantum algorithm '${algorithm}' is typically used with mode 'random'. ` +
+      `Current mode '${mode}' may not provide expected quantum resistance.`
+    );
+  }
+
+  // Validate charset
+  if (enforceCharset) {
+    if (enforceCharset.length < 10) {
+      console.warn(
+        `⚠️  Warning: Custom charset has only ${enforceCharset.length} characters. ` +
+        `Small charsets reduce entropy. Consider at least 16 characters for security.`
+      );
+    }
+
+    const uniqueChars = new Set(enforceCharset).size;
+    if (uniqueChars !== enforceCharset.length) {
+      console.warn(
+        `⚠️  Warning: Custom charset contains duplicate characters. ` +
+        `This reduces entropy and may compromise security.`
+      );
+    }
+  }
+
+  // Validate steganography
+  if (steganography && !hiddenData) {
+    console.warn(
+      `⚠️  Warning: security.steganography is enabled but hiddenData is empty. ` +
+      `No hidden data will be embedded.`
     );
   }
 
@@ -98,19 +254,6 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     }
   }
 
-  // Validate requirements
-  if ((mode === 'hmac' || mode === 'hmac-hash' || mode === 'memory-hard') && !secret) {
-    throw new Error(`Secret is required for mode: ${mode}`);
-  }
-
-  if (embedExpiryFlag && !ttl) {
-    throw new Error('TTL is required when embedExpiry is enabled');
-  }
-
-  if (deviceBinding && !deviceId) {
-    throw new Error('deviceId is required when deviceBinding is enabled');
-  }
-
   const charset = getCharset(avoidAmbiguousChars, enforceCharset);
 
   // Calculate actual ID length (excluding checksum, prefix, suffix, metadata)
@@ -121,7 +264,8 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     const totalChecksumLength = checksumCount * checksumLength;
     metadataLength += totalChecksumLength;
   }
-  if (embedExpiryFlag) metadataLength += 10;
+  if (timestampEmbed) metadataLength += 8;
+  if (embedExpiryFlag) metadataLength += 8;  // Expiry is 8 chars in base36
   if (embedGeo) metadataLength += 8;
   if (deviceBinding) metadataLength += 12;
 
@@ -199,6 +343,11 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
       default:
         idCore = generateRandomId(coreIdLength, charset, enhanceEntropy, reseed);
     }
+  }
+
+  // Embed metadata directly into the ID
+  if (embedData) {
+    idCore = idCore + embedData;
   }
 
   // Apply case formatting

@@ -142,7 +142,7 @@ async function runExamples() {
   console.log('   Parsed:');
   console.log(`     Core: ${parsed.coreId}`);
   console.log(`     Checksums: ${parsed.checksums?.join(', ')}`);
-  console.log(`     Length: ${parsed.length}\n`);
+  console.log(`     Total Length: ${parsed.totalLength} (${parsed.contentLength} content + ${parsed.totalLength - parsed.contentLength} separators)\n`);
 
   // Example 8: API Key style
   console.log('8. API Key Style:');

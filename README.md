@@ -273,7 +273,9 @@ console.log(parsed);
 //   suffix: "ID",
 //   coreId: "abc123",
 //   checksums: ["12345678"],
-//   length: 24
+//   totalLength: 24,      // Full length including separators
+//   contentLength: 20,    // Content only (without separators)
+//   separatorCount: 3     // Number of separators
 // }
 ```
 
