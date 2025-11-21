@@ -64,10 +64,8 @@ export function extractCoreId(id: string, options: SecureIdOptions = {}): string
     if (Array.isArray(checksumPosition)) {
       // Remove checksums at specific positions (reverse order to maintain positions)
       let result = coreId;
-      const sortedPositions = [...checksumPosition]
-        .slice(0, checksumCount)
-        .sort((a, b) => b - a); // Process from end to start
-      
+      const sortedPositions = [...checksumPosition].slice(0, checksumCount).sort((a, b) => b - a); // Process from end to start
+
       // Calculate actual positions with cumulative offset
       const actualPositions = [];
       let cumulativeOffset = 0;
@@ -75,7 +73,7 @@ export function extractCoreId(id: string, options: SecureIdOptions = {}): string
         actualPositions.push(checksumPosition[i] + cumulativeOffset);
         cumulativeOffset += singleChecksumLength;
       }
-      
+
       // Remove from end to start to preserve earlier positions
       for (let i = actualPositions.length - 1; i >= 0; i--) {
         const pos = actualPositions[i];
@@ -210,7 +208,10 @@ export function verifyChecksum(id: string, options: SecureIdOptions = {}): boole
       const checksumHash = secret
         ? hmacSign(checksumData, secret, algorithm)
         : hashData(checksumData, algorithm);
-      const expectedChecksum = checksumHash.toString('hex').substring(0, checksumLength).toUpperCase();
+      const expectedChecksum = checksumHash
+        .toString('hex')
+        .substring(0, checksumLength)
+        .toUpperCase();
 
       if (!timingSafeEqual(extractedChecksums[i].toUpperCase(), expectedChecksum)) {
         return false;
@@ -419,8 +420,11 @@ export function parseId(
 
   // Calculate lengths with and without separators
   const totalLength = id.length;
-  const separatorCount = options.separator ? (id.match(new RegExp(options.separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length : 0;
-  const contentLength = totalLength - (separatorCount * (options.separator?.length || 0));
+  const separatorCount = options.separator
+    ? (id.match(new RegExp(options.separator.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || [])
+        .length
+    : 0;
+  const contentLength = totalLength - separatorCount * (options.separator?.length || 0);
 
   // Try to extract expiry if embedded
   let expiresAt: number | undefined;
@@ -461,30 +465,30 @@ export function parseId(
   if (options.security?.customMetadata) {
     try {
       const compressMetadata = options.security.compressMetadata || false;
-      
+
       // Encode the provided metadata to get its length
       const jsonString = JSON.stringify(options.security.customMetadata);
       let dataToEncode: Buffer;
-      
+
       if (compressMetadata) {
         const { gzipSync } = require('zlib');
         dataToEncode = gzipSync(Buffer.from(jsonString, 'utf8'));
       } else {
         dataToEncode = Buffer.from(jsonString, 'utf8');
       }
-      
+
       const expectedEncoded = dataToEncode
         .toString('base64')
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=/g, '');
-      
+
       const customMetadataLength = expectedEncoded.length;
-      
+
       // Custom metadata is at the very end of coreId
       const startPos = coreId.length - customMetadataLength;
       const extractedEncoded = coreId.substring(startPos);
-      
+
       // Verify it matches what we expect (validation)
       if (extractedEncoded === expectedEncoded) {
         customMetadata = options.security.customMetadata;

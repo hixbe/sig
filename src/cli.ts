@@ -144,7 +144,9 @@ program
         if (parsed.prefix) console.log(`  Prefix: ${parsed.prefix}`);
         if (parsed.suffix) console.log(`  Suffix: ${parsed.suffix}`);
         if (parsed.checksums) console.log(`  Checksums: ${parsed.checksums.join(', ')}`);
-        console.log(`  Total Length: ${parsed.totalLength} (${parsed.contentLength} content + ${parsed.totalLength - parsed.contentLength} separators)`);
+        console.log(
+          `  Total Length: ${parsed.totalLength} (${parsed.contentLength} content + ${parsed.totalLength - parsed.contentLength} separators)`
+        );
       }
 
       process.exit(isValid ? 0 : 1);
@@ -186,7 +188,9 @@ program
       if (parsed.prefix) console.log(`  Prefix: ${parsed.prefix}`);
       if (parsed.suffix) console.log(`  Suffix: ${parsed.suffix}`);
       if (parsed.checksums) console.log(`  Checksums: ${parsed.checksums.join(', ')}`);
-      console.log(`  Total Length: ${parsed.totalLength} (${parsed.contentLength} content + ${parsed.totalLength - parsed.contentLength} separators)`);
+      console.log(
+        `  Total Length: ${parsed.totalLength} (${parsed.contentLength} content + ${parsed.totalLength - parsed.contentLength} separators)`
+      );
       console.log(`  Core Length: ${parsed.coreId.length}`);
     } catch (error) {
       console.error('Error parsing ID:', (error as Error).message);

@@ -1,4 +1,4 @@
-# @hixbe/sig
+# @hixbe/sig (Secure ID Generator)
 
 **Quantum-Safe Cryptographically Secure ID Generator**
 

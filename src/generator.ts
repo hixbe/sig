@@ -92,7 +92,11 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   let customMetadataLength = 0;
   if (customMetadata) {
     // Validate it's a valid object
-    if (typeof customMetadata !== 'object' || customMetadata === null || Array.isArray(customMetadata)) {
+    if (
+      typeof customMetadata !== 'object' ||
+      customMetadata === null ||
+      Array.isArray(customMetadata)
+    ) {
       throw new Error(
         `Configuration Error: customMetadata must be a valid object (non-null, non-array).`
       );
@@ -107,11 +111,11 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
       if (jsonBytes > customMetadataMaxSize) {
         throw new Error(
           `Configuration Error: customMetadata size (${jsonBytes} bytes) exceeds maximum allowed (${customMetadataMaxSize} bytes).\n` +
-          `Solutions:\n` +
-          `  1. Reduce metadata content\n` +
-          `  2. Increase customMetadataMaxSize limit\n` +
-          `  3. Remove unnecessary fields\n` +
-          `  4. Enable compression (compressMetadata: true)`
+            `Solutions:\n` +
+            `  1. Reduce metadata content\n` +
+            `  2. Increase customMetadataMaxSize limit\n` +
+            `  3. Remove unnecessary fields\n` +
+            `  4. Enable compression (compressMetadata: true)`
         );
       }
 
@@ -133,7 +137,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
         .replace(/\+/g, '-')
         .replace(/\//g, '_')
         .replace(/=/g, '');
-      
+
       customMetadataLength = customMetadataEncoded.length;
 
       console.log(
@@ -142,8 +146,8 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     } catch (error) {
       throw new Error(
         `Configuration Error: Failed to encode customMetadata. ` +
-        `Ensure it contains only JSON-serializable values. ` +
-        `Error: ${(error as Error).message}`
+          `Ensure it contains only JSON-serializable values. ` +
+          `Error: ${(error as Error).message}`
       );
     }
   }
@@ -175,29 +179,29 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     // Calculate required length with all metadata
     let totalMetadata = checksumCount * checksumLength;
     if (timestampEmbed) totalMetadata += 8;
-    if (embedExpiryFlag) totalMetadata += 8;  // Expiry is 8 chars in base36
+    if (embedExpiryFlag) totalMetadata += 8; // Expiry is 8 chars in base36
     if (embedGeo) totalMetadata += 8;
     if (deviceBinding) totalMetadata += 12;
     if (customMetadata) totalMetadata += customMetadataLength;
-    
+
     const minCoreLength = 8;
     const requiredLength = minCoreLength + totalMetadata;
-    
+
     if (length < requiredLength) {
       throw new Error(
         `Configuration Error: Length (${length}) is too short for the configured features.\n` +
-        `Metadata breakdown:\n` +
-        `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
-        `  • Timestamp: ${timestampEmbed ? 8 : 0} chars\n` +
-        `  • Expiry: ${embedExpiryFlag ? 8 : 0} chars\n` +
-        `  • Geo: ${embedGeo ? 8 : 0} chars\n` +
-        `  • Device: ${deviceBinding ? 12 : 0} chars\n` +
-        `  • Custom metadata: ${customMetadata ? customMetadataLength : 0} chars\n` +
-        `  • Total metadata: ${totalMetadata} chars\n` +
-        `  • Minimum core: ${minCoreLength} chars\n\n` +
-        `Required minimum length: ${requiredLength} chars\n` +
-        `Recommended length: ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} chars or higher\n\n` +
-        `Solution: Set length to ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} or use fewer security features.`
+          `Metadata breakdown:\n` +
+          `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
+          `  • Timestamp: ${timestampEmbed ? 8 : 0} chars\n` +
+          `  • Expiry: ${embedExpiryFlag ? 8 : 0} chars\n` +
+          `  • Geo: ${embedGeo ? 8 : 0} chars\n` +
+          `  • Device: ${deviceBinding ? 12 : 0} chars\n` +
+          `  • Custom metadata: ${customMetadata ? customMetadataLength : 0} chars\n` +
+          `  • Total metadata: ${totalMetadata} chars\n` +
+          `  • Minimum core: ${minCoreLength} chars\n\n` +
+          `Required minimum length: ${requiredLength} chars\n` +
+          `Recommended length: ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} chars or higher\n\n` +
+          `Solution: Set length to ${Math.max(24, Math.ceil(requiredLength / 4) * 4)} or use fewer security features.`
       );
     }
 
@@ -205,27 +209,27 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
       // Validate custom positions with actual calculated length
       const maxPosition = Math.max(...checksumPosition);
       const actualCoreLength = Math.max(minCoreLength, length - totalMetadata);
-      const finalIdLength = actualCoreLength + (checksumCount * checksumLength);
-      
+      const finalIdLength = actualCoreLength + checksumCount * checksumLength;
+
       if (maxPosition >= finalIdLength) {
         throw new Error(
           `Configuration Error: Checksum position ${maxPosition} exceeds ID length.\n` +
-          `Calculated ID structure:\n` +
-          `  • Core length: ${actualCoreLength} chars\n` +
-          `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
-          `  • Final ID length: ${finalIdLength} chars\n` +
-          `  • Maximum valid position: ${finalIdLength - checksumLength}\n\n` +
-          `Solutions:\n` +
-          `  1. Use checksumPosition: 'end' (recommended)\n` +
-          `  2. Adjust positions to [${Math.floor(actualCoreLength / 3)}, ${Math.floor(actualCoreLength * 2 / 3)}]\n` +
-          `  3. Increase length to ${requiredLength + 10} or more`
+            `Calculated ID structure:\n` +
+            `  • Core length: ${actualCoreLength} chars\n` +
+            `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
+            `  • Final ID length: ${finalIdLength} chars\n` +
+            `  • Maximum valid position: ${finalIdLength - checksumLength}\n\n` +
+            `Solutions:\n` +
+            `  1. Use checksumPosition: 'end' (recommended)\n` +
+            `  2. Adjust positions to [${Math.floor(actualCoreLength / 3)}, ${Math.floor((actualCoreLength * 2) / 3)}]\n` +
+            `  3. Increase length to ${requiredLength + 10} or more`
         );
       }
 
       if (checksumPosition.length < checksumCount) {
         console.warn(
           `⚠️  Warning: checksumPosition array has ${checksumPosition.length} positions ` +
-          `but checksumCount is ${checksumCount}. Only ${checksumPosition.length} checksums will be placed.`
+            `but checksumCount is ${checksumCount}. Only ${checksumPosition.length} checksums will be placed.`
         );
       }
     }
@@ -233,29 +237,35 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
 
   // Validate mode requirements
   if ((mode === 'hmac' || mode === 'hmac-hash' || mode === 'memory-hard') && !secret) {
-    throw new Error(`Secret is required for mode '${mode}'. Provide options.secret or set an environment variable.`);
+    throw new Error(
+      `Secret is required for mode '${mode}'. Provide options.secret or set an environment variable.`
+    );
   }
 
   // Validate security options
   if (embedExpiryFlag && !ttl) {
-    throw new Error('TTL is required when security.embedExpiry is enabled. Specify security.ttl in milliseconds.');
+    throw new Error(
+      'TTL is required when security.embedExpiry is enabled. Specify security.ttl in milliseconds.'
+    );
   }
 
   if (embedExpiryFlag && ttl !== undefined && ttl < 1000) {
     console.warn(
       `⚠️  Warning: TTL (${ttl}ms) is very short (< 1 second). ` +
-      `This may cause IDs to expire immediately. Consider using at least 60000ms (1 minute).`
+        `This may cause IDs to expire immediately. Consider using at least 60000ms (1 minute).`
     );
   }
 
   if (deviceBinding && !deviceId) {
-    throw new Error('deviceId is required when security.deviceBinding is enabled. Provide security.deviceId.');
+    throw new Error(
+      'deviceId is required when security.deviceBinding is enabled. Provide security.deviceId.'
+    );
   }
 
   if (embedGeo && !geoRegion) {
     console.warn(
       `⚠️  Warning: security.embedGeo is enabled but geoRegion is not specified. ` +
-      `The ID will be generated without geographic binding.`
+        `The ID will be generated without geographic binding.`
     );
   }
 
@@ -264,14 +274,14 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     if (separator.length > 3) {
       console.warn(
         `⚠️  Warning: Separator '${separator}' is ${separator.length} characters long. ` +
-        `Long separators increase ID length. Consider using 1-2 character separators.`
+          `Long separators increase ID length. Consider using 1-2 character separators.`
       );
     }
 
     if (separatorLength < 2 || separatorLength > 16) {
       console.warn(
         `⚠️  Warning: separatorLength (${separatorLength}) is outside typical range (2-16). ` +
-        `This may produce unusually formatted IDs.`
+          `This may produce unusually formatted IDs.`
       );
     }
   }
@@ -280,7 +290,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   if ((algorithm === 'kyber768' || algorithm === 'dilithium3') && mode !== 'random') {
     console.warn(
       `⚠️  Warning: Post-quantum algorithm '${algorithm}' is typically used with mode 'random'. ` +
-      `Current mode '${mode}' may not provide expected quantum resistance.`
+        `Current mode '${mode}' may not provide expected quantum resistance.`
     );
   }
 
@@ -289,7 +299,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     if (enforceCharset.length < 10) {
       console.warn(
         `⚠️  Warning: Custom charset has only ${enforceCharset.length} characters. ` +
-        `Small charsets reduce entropy. Consider at least 16 characters for security.`
+          `Small charsets reduce entropy. Consider at least 16 characters for security.`
       );
     }
 
@@ -297,7 +307,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     if (uniqueChars !== enforceCharset.length) {
       console.warn(
         `⚠️  Warning: Custom charset contains duplicate characters. ` +
-        `This reduces entropy and may compromise security.`
+          `This reduces entropy and may compromise security.`
       );
     }
   }
@@ -306,7 +316,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   if (steganography && !hiddenData) {
     console.warn(
       `⚠️  Warning: security.steganography is enabled but hiddenData is empty. ` +
-      `No hidden data will be embedded.`
+        `No hidden data will be embedded.`
     );
   }
 
@@ -332,7 +342,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     metadataLength += totalChecksumLength;
   }
   if (timestampEmbed) metadataLength += 8;
-  if (embedExpiryFlag) metadataLength += 8;  // Expiry is 8 chars in base36
+  if (embedExpiryFlag) metadataLength += 8; // Expiry is 8 chars in base36
   if (embedGeo) metadataLength += 8;
   if (deviceBinding) metadataLength += 12;
   if (customMetadata) metadataLength += customMetadataLength;
@@ -427,7 +437,14 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   // Add checksums if requested
   let finalId = idCore;
   if (checksum) {
-    finalId = addChecksums(idCore, checksumCount, checksumLength, checksumPosition, algorithm, secret);
+    finalId = addChecksums(
+      idCore,
+      checksumCount,
+      checksumLength,
+      checksumPosition,
+      algorithm,
+      secret
+    );
   }
 
   // Collision detection
@@ -440,7 +457,14 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
       idCore = generateRandomId(coreIdLength, charset, enhanceEntropy, reseed);
       finalId = idCore;
       if (checksum) {
-        finalId = addChecksums(idCore, checksumCount, checksumLength, checksumPosition, algorithm, secret);
+        finalId = addChecksums(
+          idCore,
+          checksumCount,
+          checksumLength,
+          checksumPosition,
+          algorithm,
+          secret
+        );
       }
       attempts++;
     }

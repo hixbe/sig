@@ -43,7 +43,7 @@ We take security seriously. If you discover a security vulnerability, please fol
 ### DO:
 
 1. **Report privately** via one of these methods:
-   - Email: [Your security email - e.g., security@hixbe.com]
+   - Email: security@hixbe.com
    - GitHub Security Advisory: Use the "Security" tab → "Report a vulnerability"
 
 2. **Provide details**:
