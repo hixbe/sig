@@ -1,4 +1,4 @@
-# @webx/sig
+# @hixbe/sig
 
 **Quantum-Safe Cryptographically Secure ID Generator**
 
@@ -26,7 +26,7 @@ A production-ready TypeScript library for generating high-security, cryptographi
 ## Installation
 
 ```bash
-npm install @webx/sig
+npm install @hixbe/sig
 ```
 
 ## Quick Start
@@ -34,7 +34,7 @@ npm install @webx/sig
 ### Basic Usage
 
 ```typescript
-import { generateId } from '@webx/sig';
+import { generateId } from '@hixbe/sig';
 
 // Simple random ID
 const id = await generateId();
@@ -90,7 +90,7 @@ console.log(secureId); // e.g., "ORD-KYQCZAOA-6SMRIDES-A418F0EB"
 ### Advanced Configuration
 
 ```typescript
-import { generateId, verifyId } from '@webx/sig';
+import { generateId, verifyId } from '@hixbe/sig';
 
 const id = await generateId({
   length: 32,
@@ -102,7 +102,7 @@ const id = await generateId({
   checksumCount: 2,
   checksumLength: 4,   // 4-character checksums
   checksumPosition: 'end',
-  prefix: 'WEBX',
+  prefix: 'HIXBE',
   suffix: 'ID',
   secret: process.env.SIG_SECRET,
   salt: generateRandomSalt(),
@@ -118,7 +118,7 @@ const id = await generateId({
 });
 
 console.log(id);
-// e.g., "WEBX-mK7P9n2v-L8wR4tY6-uI3oE5aS-A1B2-C3D4-ID"
+// e.g., "HIXBE-mK7P9n2v-L8wR4tY6-uI3oE5aS-A1B2-C3D4-ID"
 
 // Verify ID
 const isValid = verifyId(id, {
@@ -252,8 +252,8 @@ const hmacValid = verifyHmac(id, 'my-secret', {
 Extract the core ID (remove prefix/suffix/checksums).
 
 ```typescript
-const coreId = extractCoreId('WEBX-abc123-DEF456-ID', {
-  prefix: 'WEBX',
+const coreId = extractCoreId('HIXBE-abc123-DEF456-ID', {
+  prefix: 'HIXBE',
   suffix: 'ID',
   separator: '-',
 });
@@ -268,8 +268,8 @@ Parse ID structure into components.
 const parsed = parseId(id, options);
 console.log(parsed);
 // {
-//   fullId: "WEBX-abc123-12345678-ID",
-//   prefix: "WEBX",
+//   fullId: "HIXBE-abc123-12345678-ID",
+//   prefix: "HIXBE",
 //   suffix: "ID",
 //   coreId: "abc123",
 //   checksums: ["12345678"],
@@ -293,30 +293,30 @@ const salt = generateRandomSalt(32);
 
 ```bash
 # Basic
-npx @webx/sig generate
+npx @hixbe/sig generate
 
 # With options
-npx @webx/sig generate \
+npx @hixbe/sig generate \
   --length 32 \
   --algorithm sha3-512 \
   --mode hmac-hash \
   --secret "my-secret" \
   --checksum \
-  --prefix "WEBX" \
+  --prefix "HIXBE" \
   --separator "-" \
   --separator-length 4 \
   --enhance-entropy \
   --timestamp
 
 # Generate multiple IDs
-npx @webx/sig generate --count 10 --length 16
+npx @hixbe/sig generate --count 10 --length 16
 ```
 
 ### Verify IDs
 
 ```bash
-npx @webx/sig verify "WEBX-abc123-12345678" \
-  --prefix "WEBX" \
+npx @hixbe/sig verify "HIXBE-abc123-12345678" \
+  --prefix "HIXBE" \
   --checksum \
   --secret "my-secret"
 ```
@@ -324,8 +324,8 @@ npx @webx/sig verify "WEBX-abc123-12345678" \
 ### Parse IDs
 
 ```bash
-npx @webx/sig parse "WEBX-abc123-12345678-ID" \
-  --prefix "WEBX" \
+npx @hixbe/sig parse "HIXBE-abc123-12345678-ID" \
+  --prefix "HIXBE" \
   --suffix "ID" \
   --separator "-"
 ```

@@ -1,11 +1,11 @@
 /**
- * Examples for using @webx/sig
+ * Examples for using @hixbe/sig
  */
 
 import { generateId, verifyId, parseId, generateRandomSalt } from './index';
 
 async function runExamples() {
-  console.log('=== @webx/sig Examples ===\n');
+  console.log('=== @hixbe/sig Examples ===\n');
 
   // Example 1: Simple random ID
   console.log('1. Simple Random ID:');
@@ -44,7 +44,7 @@ async function runExamples() {
   console.log('4. With Prefix and Suffix:');
   const brandedId = await generateId({
     length: 24,
-    prefix: 'WEBX',
+    prefix: 'HIXBE',
     suffix: 'ID',
     separator: '_',
     case: 'upper',

@@ -1,5 +1,5 @@
 /**
- * TypeScript type definitions for @webx/sig
+ * TypeScript type definitions for @hixbe/sig
  */
 
 export type Algorithm =
@@ -138,6 +138,12 @@ export interface SecurityOptions {
   hiddenData?: string;
   /** Secure memory deletion */
   secureDelete?: boolean;
+  /** Custom JSON metadata to embed */
+  customMetadata?: Record<string, unknown>;
+  /** Maximum size for custom metadata in bytes */
+  customMetadataMaxSize?: number;
+  /** Compress custom metadata using gzip */
+  compressMetadata?: boolean;
 }
 
 export interface SecureIdOptions {

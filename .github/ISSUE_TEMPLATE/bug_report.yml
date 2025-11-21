@@ -74,7 +74,7 @@ body:
       description: Please provide a minimal code sample that reproduces the issue
       placeholder: |
         ```typescript
-        import { generateId } from '@webx/sig';
+        import { generateId } from '@hixbe/sig';
         
         const id = await generateId({
           length: 32,
@@ -87,7 +87,7 @@ body:
     id: version
     attributes:
       label: Package Version
-      description: What version of @webx/sig are you using?
+      description: What version of @hixbe/sig are you using?
       options:
         - 2.0.0 (latest)
         - 1.x.x

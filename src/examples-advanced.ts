@@ -1,5 +1,5 @@
 /**
- * Advanced security features examples for @webx/sig
+ * Advanced security features examples for @hixbe/sig
  */
 
 import { generateId } from './index';
@@ -15,7 +15,7 @@ import {
 import type { AuditEvent } from './types';
 
 async function runAdvancedExamples() {
-  console.log('=== @webx/sig Advanced Security Examples ===\n');
+  console.log('=== @hixbe/sig Advanced Security Examples ===\n');
 
   // Example 1: Rate Limiting
   console.log('1. Rate Limiting:');

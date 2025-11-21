@@ -1,5 +1,5 @@
 /**
- * Cryptographic utilities for @webx/sig
+ * Cryptographic utilities for @hixbe/sig
  */
 
 import * as crypto from 'crypto';
@@ -69,7 +69,7 @@ export function deriveKey(
   pepper: string,
   algorithm: Algorithm
 ): Buffer {
-  const info = 'webx-sig-v1';
+  const info = 'hixbe-sig-v1';
   const keyLength = 32;
   const hashAlg = algorithm.startsWith('sha3-')
     ? 'sha256'

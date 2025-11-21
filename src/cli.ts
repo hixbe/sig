@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CLI for @webx/sig
+ * CLI for @hixbe/sig
  */
 
 import { Command } from 'commander';

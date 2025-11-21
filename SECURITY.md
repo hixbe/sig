@@ -13,7 +13,7 @@ We release security updates for the following versions:
 
 ### What This Package Does
 
-@webx/sig provides **cryptographic tools** for secure ID generation using industry-standard algorithms:
+@hixbe/sig provides **cryptographic tools** for secure ID generation using industry-standard algorithms:
 - SHA-256, SHA-512, SHA3-256, SHA3-512, BLAKE2b-512, SHAKE256
 - HMAC signing
 - CSPRNG (Cryptographically Secure Pseudo-Random Number Generator)
@@ -43,7 +43,7 @@ We take security seriously. If you discover a security vulnerability, please fol
 ### DO:
 
 1. **Report privately** via one of these methods:
-   - Email: [Your security email - e.g., security@webx.com]
+   - Email: [Your security email - e.g., security@hixbe.com]
    - GitHub Security Advisory: Use the "Security" tab → "Report a vulnerability"
 
 2. **Provide details**:
@@ -84,7 +84,7 @@ const id = await generateId({
 ### Recommended Configuration for Payment Systems
 
 ```typescript
-import { generateId, generateRandomSalt } from '@webx/sig';
+import { generateId, generateRandomSalt } from '@hixbe/sig';
 
 const transactionId = await generateId({
   length: 32,
@@ -236,4 +236,4 @@ For security vulnerabilities:
 ---
 
 **Last Updated:** November 19, 2025  
-**Package Version:** @webx/sig v2.0.0
+**Package Version:** @hixbe/sig v2.0.0

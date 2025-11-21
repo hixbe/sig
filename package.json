@@ -1,5 +1,5 @@
 {
-  "name": "@webx/sig",
+  "name": "@hixbe/sig",
   "version": "2.0.2",
   "description": "Quantum-Safe Cryptographically Secure ID Generator with Advanced Security Features",
   "main": "dist/index.js",

@@ -1,5 +1,5 @@
 /**
- * Advanced security features for @webx/sig
+ * Advanced security features for @hixbe/sig
  */
 
 import * as crypto from 'crypto';

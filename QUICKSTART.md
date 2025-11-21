@@ -1,11 +1,11 @@
-# Quick Start Guide - @webx/sig v2.0
+# Quick Start Guide - @hixbe/sig v2.0
 
-Get started with @webx/sig in 5 minutes.
+Get started with @hixbe/sig in 5 minutes.
 
 ## Installation
 
 ```bash
-npm install @webx/sig
+npm install @hixbe/sig
 ```
 
 ## Development Setup
@@ -65,7 +65,7 @@ node dist/cli.js parse "YOUR-ID-HERE" --prefix "YOUR" --separator "-"
 
 Create a test file `test.mjs`:
 ```javascript
-import { generateId, verifyId } from '@webx/sig';
+import { generateId, verifyId } from '@hixbe/sig';
 
 async function test() {
   // Generate ID (async in v2.0)
@@ -167,7 +167,7 @@ const txId = await generateId({
 
 ### Using Salt and Pepper (Maximum Security)
 ```javascript
-import { generateId, generateRandomSalt } from '@webx/sig';
+import { generateId, generateRandomSalt } from '@hixbe/sig';
 
 // Salt: Random per-ID value (store with the ID in database)
 const salt = generateRandomSalt();
@@ -235,5 +235,5 @@ npm link
 
 Then in another project:
 ```bash
-npm link @webx/sig
+npm link @hixbe/sig
 ```

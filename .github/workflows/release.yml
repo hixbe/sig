@@ -59,7 +59,7 @@ jobs:
             
             ### Installation
             ```bash
-            npm install @webx/sig@${{ needs.check-version.outputs.new-version }}
+            npm install @hixbe/sig@${{ needs.check-version.outputs.new-version }}
             ```
           draft: false
           prerelease: false

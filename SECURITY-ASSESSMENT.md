@@ -1,4 +1,4 @@
-# Security Assessment - @webx/sig
+# Security Assessment - @hixbe/sig
 
 ## 🔒 Security Rating: **ENTERPRISE-GRADE / PRODUCTION-READY**
 
@@ -268,7 +268,7 @@ export function deriveKey(secret, salt, pepper, algorithm): Buffer {
 
 ### Industry Comparison:
 
-| Solution | Security Level | @webx/sig Equivalent |
+| Solution | Security Level | @hixbe/sig Equivalent |
 |----------|----------------|---------------------|
 | UUID v4 | ⭐⭐⭐ Medium | `mode: 'random'` |
 | nanoid | ⭐⭐⭐⭐ High | `mode: 'random', enhanceEntropy: true` |
@@ -276,7 +276,7 @@ export function deriveKey(secret, salt, pepper, algorithm): Buffer {
 | AWS Access Keys | ⭐⭐⭐⭐⭐ Maximum | `mode: 'hmac', checksum: true` |
 | JWT Token IDs | ⭐⭐⭐⭐ High | `mode: 'hybrid', timestampEmbed: true` |
 
-**@webx/sig Advantage:** Configurable security levels - from simple UUIDs to military-grade tokens in one package.
+**@hixbe/sig Advantage:** Configurable security levels - from simple UUIDs to military-grade tokens in one package.
 
 ---
 
@@ -285,7 +285,7 @@ export function deriveKey(secret, salt, pepper, algorithm): Buffer {
 ### 1. Payment Transaction IDs
 
 ```typescript
-import { generateId, generateRandomSalt } from '@webx/sig';
+import { generateId, generateRandomSalt } from '@hixbe/sig';
 
 const transactionId = await generateId({
   length: 32,
@@ -537,22 +537,22 @@ const id = await generateId({
 
 ### vs. Stripe API Keys
 - **Similarity**: Both use HMAC-based generation
-- **@webx/sig Advantage**: More algorithms, configurable security levels
+- **@hixbe/sig Advantage**: More algorithms, configurable security levels
 - **Verdict**: ✅ Equal or better security
 
 ### vs. AWS IAM Keys
 - **Similarity**: Both use cryptographically secure generation
-- **@webx/sig Advantage**: Quantum-resistant options, more transparency
+- **@hixbe/sig Advantage**: Quantum-resistant options, more transparency
 - **Verdict**: ✅ Equal or better security
 
 ### vs. Auth0 Tokens
 - **Similarity**: Both support TTL and expiry
-- **@webx/sig Advantage**: More control over generation, no third-party dependency
+- **@hixbe/sig Advantage**: More control over generation, no third-party dependency
 - **Verdict**: ✅ Equal security, more control
 
 ### vs. UUID v4 (Standard)
 - **Security Gap**: UUID v4 is 122 bits of randomness
-- **@webx/sig Advantage**: Configurable length, HMAC signing, checksums, quantum algorithms
+- **@hixbe/sig Advantage**: Configurable length, HMAC signing, checksums, quantum algorithms
 - **Verdict**: ✅ Significantly better security
 
 ---
@@ -597,7 +597,7 @@ API_SECRET=your-api-hmac-signing-key
 
 ## Conclusion
 
-**@webx/sig** provides **military-grade, enterprise-ready** ID generation suitable for the most security-sensitive applications. The cryptographic foundation, multiple security layers, and compliance with industry standards make it appropriate for:
+**@hixbe/sig** provides **military-grade, enterprise-ready** ID generation suitable for the most security-sensitive applications. The cryptographic foundation, multiple security layers, and compliance with industry standards make it appropriate for:
 
 - Payment processing
 - Financial services
@@ -614,4 +614,4 @@ When configured properly (using `hmac-hash` mode with salt + pepper), it provide
 
 *Last Updated: November 19, 2025*
 *Security Assessment Version: 1.0*
-*Package Version: @webx/sig v2.0.0*
+*Package Version: @hixbe/sig v2.0.0*

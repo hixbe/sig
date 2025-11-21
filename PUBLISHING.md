@@ -1,4 +1,4 @@
-# Publishing @webx/sig
+# Publishing @hixbe/sig
 
 This package is configured to publish to both NPM and GitHub Packages.
 
@@ -50,8 +50,8 @@ npm publish --registry=https://npm.pkg.github.com --access public
 
 Both publications are configured as **public** and accessible to everyone:
 
-- **NPM**: `npm install @webx/sig`
-- **GitHub**: `npm install @webx/sig --registry=https://npm.pkg.github.com`
+- **NPM**: `npm install @hixbe/sig`
+- **GitHub**: `npm install @hixbe/sig --registry=https://npm.pkg.github.com`
 
 ## Version Management
 

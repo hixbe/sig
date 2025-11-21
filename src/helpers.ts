@@ -1,7 +1,8 @@
 /**
- * Verification and helper utilities for @webx/sig
+ * Verification and helper utilities for @hixbe/sig
  */
 
+import { gunzipSync } from 'zlib';
 import { hashData, hmacSign, deriveKey, timingSafeEqual } from './crypto-utils';
 import { SecureIdOptions, VerifyOptions, VerificationMethod } from './types';
 import {
@@ -409,6 +410,7 @@ export function parseId(
   isExpired?: boolean;
   geoRegion?: string;
   deviceId?: string;
+  customMetadata?: Record<string, unknown>;
   algorithm?: string;
   mode?: string;
 } {
@@ -452,6 +454,46 @@ export function parseId(
     deviceId = options.security.deviceId;
   }
 
+  // Extract custom metadata if present
+  // Note: To extract custom metadata, you must pass the original customMetadata
+  // in options to know its encoded length
+  let customMetadata: Record<string, unknown> | undefined;
+  if (options.security?.customMetadata) {
+    try {
+      const compressMetadata = options.security.compressMetadata || false;
+      
+      // Encode the provided metadata to get its length
+      const jsonString = JSON.stringify(options.security.customMetadata);
+      let dataToEncode: Buffer;
+      
+      if (compressMetadata) {
+        const { gzipSync } = require('zlib');
+        dataToEncode = gzipSync(Buffer.from(jsonString, 'utf8'));
+      } else {
+        dataToEncode = Buffer.from(jsonString, 'utf8');
+      }
+      
+      const expectedEncoded = dataToEncode
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+      
+      const customMetadataLength = expectedEncoded.length;
+      
+      // Custom metadata is at the very end of coreId
+      const startPos = coreId.length - customMetadataLength;
+      const extractedEncoded = coreId.substring(startPos);
+      
+      // Verify it matches what we expect (validation)
+      if (extractedEncoded === expectedEncoded) {
+        customMetadata = options.security.customMetadata;
+      }
+    } catch (e) {
+      // Custom metadata extraction failed
+    }
+  }
+
   return {
     fullId: id,
     prefix: options.prefix || undefined,
@@ -472,6 +514,7 @@ export function parseId(
     isExpired,
     geoRegion,
     deviceId,
+    customMetadata,
     algorithm: options.algorithm || undefined,
     mode: options.mode || undefined,
   };

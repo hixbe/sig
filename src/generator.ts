@@ -1,7 +1,8 @@
 /**
- * Core ID generation engine for @webx/sig
+ * Core ID generation engine for @hixbe/sig
  */
 
+import { gzipSync, gunzipSync } from 'zlib';
 import {
   generateRandomBytes,
   hashData,
@@ -77,11 +78,75 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     steganography = false,
     hiddenData = '',
     secureDelete: secureDeleteFlag = false,
+    customMetadata,
+    customMetadataMaxSize = 1024, // 1KB default max
+    compressMetadata = false,
   } = security;
 
   // ============================================================================
   // CONFIGURATION VALIDATION
   // ============================================================================
+
+  // Validate custom metadata first (needed for length calculations)
+  let customMetadataEncoded = '';
+  let customMetadataLength = 0;
+  if (customMetadata) {
+    // Validate it's a valid object
+    if (typeof customMetadata !== 'object' || customMetadata === null || Array.isArray(customMetadata)) {
+      throw new Error(
+        `Configuration Error: customMetadata must be a valid object (non-null, non-array).`
+      );
+    }
+
+    // Stringify and encode
+    try {
+      const jsonString = JSON.stringify(customMetadata);
+      const jsonBytes = Buffer.from(jsonString, 'utf8').length;
+
+      // Check size limit
+      if (jsonBytes > customMetadataMaxSize) {
+        throw new Error(
+          `Configuration Error: customMetadata size (${jsonBytes} bytes) exceeds maximum allowed (${customMetadataMaxSize} bytes).\n` +
+          `Solutions:\n` +
+          `  1. Reduce metadata content\n` +
+          `  2. Increase customMetadataMaxSize limit\n` +
+          `  3. Remove unnecessary fields\n` +
+          `  4. Enable compression (compressMetadata: true)`
+        );
+      }
+
+      let dataToEncode: Buffer;
+      let compressionInfo = '';
+
+      if (compressMetadata) {
+        // Compress with gzip
+        const compressed = gzipSync(Buffer.from(jsonString, 'utf8'));
+        dataToEncode = compressed;
+        compressionInfo = ` (compressed from ${jsonBytes} to ${compressed.length} bytes, ${((1 - compressed.length / jsonBytes) * 100).toFixed(1)}% reduction)`;
+      } else {
+        dataToEncode = Buffer.from(jsonString, 'utf8');
+      }
+
+      // Encode to base64url (safe for IDs)
+      customMetadataEncoded = dataToEncode
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+      
+      customMetadataLength = customMetadataEncoded.length;
+
+      console.log(
+        `ℹ️  Custom metadata: ${jsonBytes} bytes → ${customMetadataLength} chars (base64url)${compressionInfo}`
+      );
+    } catch (error) {
+      throw new Error(
+        `Configuration Error: Failed to encode customMetadata. ` +
+        `Ensure it contains only JSON-serializable values. ` +
+        `Error: ${(error as Error).message}`
+      );
+    }
+  }
 
   // Validate length
   if (length < 8) {
@@ -113,6 +178,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     if (embedExpiryFlag) totalMetadata += 8;  // Expiry is 8 chars in base36
     if (embedGeo) totalMetadata += 8;
     if (deviceBinding) totalMetadata += 12;
+    if (customMetadata) totalMetadata += customMetadataLength;
     
     const minCoreLength = 8;
     const requiredLength = minCoreLength + totalMetadata;
@@ -123,9 +189,10 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
         `Metadata breakdown:\n` +
         `  • Checksums: ${checksumCount * checksumLength} chars (${checksumCount} × ${checksumLength})\n` +
         `  • Timestamp: ${timestampEmbed ? 8 : 0} chars\n` +
-        `  • Expiry: ${embedExpiryFlag ? 10 : 0} chars\n` +
+        `  • Expiry: ${embedExpiryFlag ? 8 : 0} chars\n` +
         `  • Geo: ${embedGeo ? 8 : 0} chars\n` +
         `  • Device: ${deviceBinding ? 12 : 0} chars\n` +
+        `  • Custom metadata: ${customMetadata ? customMetadataLength : 0} chars\n` +
         `  • Total metadata: ${totalMetadata} chars\n` +
         `  • Minimum core: ${minCoreLength} chars\n\n` +
         `Required minimum length: ${requiredLength} chars\n` +
@@ -268,6 +335,7 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   if (embedExpiryFlag) metadataLength += 8;  // Expiry is 8 chars in base36
   if (embedGeo) metadataLength += 8;
   if (deviceBinding) metadataLength += 12;
+  if (customMetadata) metadataLength += customMetadataLength;
 
   coreIdLength = Math.max(8, length - metadataLength);
 
@@ -287,6 +355,9 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
   }
   if (deviceBinding && deviceId) {
     embedData += embedDeviceId(deviceId);
+  }
+  if (customMetadata) {
+    embedData += customMetadataEncoded;
   }
 
   let idCore: string;
@@ -345,13 +416,13 @@ export async function generateId(options: SecureIdOptions = {}): Promise<string>
     }
   }
 
-  // Embed metadata directly into the ID
+  // Apply case formatting to core BEFORE adding metadata
+  idCore = applyCase(idCore, caseType);
+
+  // Embed metadata directly into the ID (after case formatting to preserve metadata case)
   if (embedData) {
     idCore = idCore + embedData;
   }
-
-  // Apply case formatting
-  idCore = applyCase(idCore, caseType);
 
   // Add checksums if requested
   let finalId = idCore;

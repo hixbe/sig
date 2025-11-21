@@ -197,7 +197,7 @@ npm publish --dry-run --access public
 npm publish --access public
 
 # 6. Verify on npm
-npm view @webx/sig
+npm view @hixbe/sig
 ```
 
 ---
@@ -208,13 +208,13 @@ npm view @webx/sig
 # Install in a clean directory
 mkdir /tmp/test-install && cd /tmp/test-install
 npm init -y
-npm install @webx/sig
+npm install @hixbe/sig
 
 # Test it works
-node -e "import('@webx/sig').then(m => console.log('✅ Works:', Object.keys(m)))"
+node -e "import('@hixbe/sig').then(m => console.log('✅ Works:', Object.keys(m)))"
 
 # Check no secrets in published package
-tar -xzf ~/.npm/_cacache/.../webx-sig-2.0.0.tgz
+tar -xzf ~/.npm/_cacache/.../hixbe-sig-2.0.0.tgz
 grep -r "secret.*=.*['\"]" package/ || echo "✅ No secrets"
 
 # Clean up
@@ -229,7 +229,7 @@ cd ~ && rm -rf /tmp/test-install
 
 ```bash
 # 1. Unpublish (within 72 hours of publishing)
-npm unpublish @webx/sig@VERSION
+npm unpublish @hixbe/sig@VERSION
 
 # 2. Rotate ALL secrets immediately
 # - Change all API keys

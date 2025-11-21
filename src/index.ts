@@ -1,5 +1,5 @@
 /**
- * Main entry point for @webx/sig
+ * Main entry point for @hixbe/sig
  */
 
 export { generateId } from './generator';

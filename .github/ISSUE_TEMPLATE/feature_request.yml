@@ -77,7 +77,7 @@ body:
       description: Show how you would use this feature
       placeholder: |
         ```typescript
-        import { newFeature } from '@webx/sig';
+        import { newFeature } from '@hixbe/sig';
         
         const result = await newFeature({
           // ... options

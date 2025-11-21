@@ -1,5 +1,5 @@
 /**
- * @package @webx/sig
+ * @package @hixbe/sig
  *
  * Quantum-Safe Cryptographically Secure ID Generator
  * For high-security applications: auth flows, distributed systems, payment IDs,
@@ -38,7 +38,7 @@
  *   checksum: true,
  *   checksumCount: 2,
  *   checksumPosition: [5, 10], // custom array positions
- *   prefix: 'WEBX',
+ *   prefix: 'HIXBE',
  *   suffix: 'ID',
  *   secret: process.env.SIG_SECRET,
  *   salt: generateRandomSalt(),
@@ -111,8 +111,8 @@
  * CLI
  * ---------------------------------------------------
  *
- * npx @webx/sig generate [options]
- * npx @webx/sig verify <id> [options]
+ * npx @hixbe/sig generate [options]
+ * npx @hixbe/sig verify <id> [options]
  *
  * CLI Options:
  * - --length, --algorithm, --mode, --case

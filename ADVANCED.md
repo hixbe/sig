@@ -1,6 +1,6 @@
-# @webx/sig - Advanced Security Features
+# @hixbe/sig - Advanced Security Features
 
-This document describes the advanced security features added to @webx/sig v2.0.
+This document describes the advanced security features added to @hixbe/sig v2.0.
 
 ## New Security Features
 
@@ -26,7 +26,7 @@ const id = await generateId({
 Pre-generated entropy pool for better performance and security:
 
 ```typescript
-import { getPooledEntropy, mixEntropyPool } from '@webx/sig';
+import { getPooledEntropy, mixEntropyPool } from '@hixbe/sig';
 
 // Get entropy from pool
 const entropy = getPooledEntropy(64);
@@ -53,7 +53,7 @@ const id = await generateId({
 Extended timing-safe operations to prevent timing attacks:
 
 ```typescript
-import { constantTimeLength, constantTimeCharAt } from '@webx/sig';
+import { constantTimeLength, constantTimeCharAt } from '@hixbe/sig';
 
 const isCorrectLength = constantTimeLength(id, 32);
 const charMatches = constantTimeCharAt(id, 0, 'A');
@@ -117,7 +117,7 @@ import {
   generatePostQuantumKey, 
   postQuantumSign, 
   postQuantumVerify 
-} from '@webx/sig';
+} from '@hixbe/sig';
 
 // Generate quantum-resistant key
 const pqKey = generatePostQuantumKey('kyber768');  // or 'dilithium3'
@@ -183,7 +183,7 @@ Our API is designed to be compatible with future liboqs integration.
 Comprehensive audit logging for all operations:
 
 ```typescript
-import { setAuditLogger } from '@webx/sig';
+import { setAuditLogger } from '@hixbe/sig';
 
 // Custom audit logger
 setAuditLogger({
@@ -262,7 +262,7 @@ const isValid = verifyId(id, {
 Maintain and check revoked IDs:
 
 ```typescript
-import { revokeId, isRevoked, setRevocationList } from '@webx/sig';
+import { revokeId, isRevoked, setRevocationList } from '@hixbe/sig';
 
 // Check if ID is revoked
 if (isRevoked(id)) {
@@ -302,7 +302,7 @@ const id = await generateId({
 Hide metadata within IDs:
 
 ```typescript
-import { embedHiddenData, extractHiddenData } from '@webx/sig';
+import { embedHiddenData, extractHiddenData } from '@hixbe/sig';
 
 const id = await generateId({
   security: {

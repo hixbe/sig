@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting a performance issue! This helps us optimize @webx/sig for everyone.
+        Thanks for reporting a performance issue! This helps us optimize @hixbe/sig for everyone.
 
   - type: checkboxes
     id: prerequisites
@@ -56,7 +56,7 @@ body:
       description: Share the code that exhibits the performance issue
       placeholder: |
         ```typescript
-        import { generateId } from '@webx/sig';
+        import { generateId } from '@hixbe/sig';
         
         // Slow code
         for (let i = 0; i < 10000; i++) {
