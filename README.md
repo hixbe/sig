@@ -502,13 +502,6 @@ This package provides cryptographic tools for secure ID generation. **Security d
    - Review key rotation procedures
    - Monitor for anomalies
 
-### Publishing This Package is Safe Because:
-
-✅ **No secrets in source code** - All secrets are user-provided configuration  
-✅ **Standard cryptography** - Uses public algorithms (SHA3, HMAC, BLAKE2b)  
-✅ **Security by design** - Not security by obscurity  
-✅ **Open source advantages** - Community can audit for vulnerabilities  
-
 ### Disclaimer:
 
 This software is provided "as is" without warranty. While we use industry-standard cryptographic practices, **you are responsible for:**
@@ -526,7 +519,7 @@ For payment gateways and high-security applications, we recommend:
 
 Found a security vulnerability? Please report it responsibly:
 1. **Do NOT open a public GitHub issue**
-2. Email security concerns to: [Your security contact email]
+2. Email security concerns to: security@hixbe.com
 3. Allow reasonable time for fix before public disclosure
 
 ## Performance
